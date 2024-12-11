@@ -4,6 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
+const projectRoutes = require('./routes/projectRoutes');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/projects', projectRoutes);
 
 app.use(errorHandler);
 

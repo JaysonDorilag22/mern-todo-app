@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../helpers/token");
-const { checkMissingFields } = require("../utils/validationUtils");
+const {uploadImage} = require("../utils/uploadImage");
 
 
 
@@ -18,11 +18,6 @@ const signUp = async (req, res) => {
   const avatar = req.file;
 
   try {
-    const missingFields = checkMissingFields(['name', 'email', 'password'], req.body);
-
-    if (missingFields.length > 0) {
-      return res.status(400).json({ message: `Missing fields: ${missingFields.join(', ')}` });
-    }
 
     const userExists = await User.findOne({ email });
 
@@ -71,12 +66,6 @@ const signIn = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const missingFields = checkMissingFields(['email', 'password'], req.body);
-
-    if (missingFields.length > 0) {
-      return res.status(400).json({ message: `Missing fields: ${missingFields.join(', ')}` });
-    }
-
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -104,4 +93,13 @@ const signIn = async (req, res) => {
   }
 };
 
-module.exports = { signUp, signIn, testapi };
+const logout = (req, res) => {
+  res.cookie('token', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    expires: new Date(0),
+  });
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
+module.exports = { signUp, signIn, logout, testapi };

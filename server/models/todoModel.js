@@ -34,6 +34,20 @@ const todoSchema = new mongoose.Schema({
       required: true,
     },
   }],
+  documents: [{
+    type: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+  }],
+  assignedUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 }, {
   timestamps: true,
 });

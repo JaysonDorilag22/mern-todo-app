@@ -17,16 +17,29 @@ const projectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Todo',
   }],
-  images: [{
-    publicId: {
-      type: String,
-      required: true,
-    },
+  image: {
     url: {
       type: String,
-      required: true,
+      required: false,
     },
+    publicId: {
+      type: String,
+      required: false,
+    },
+  },
+  invitedUsers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   }],
+  referralCode: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  isAcceptingUsers: {
+    type: Boolean,
+    default: true,
+  },
 }, {
   timestamps: true,
 });
