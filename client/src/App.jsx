@@ -1,24 +1,19 @@
-import Home from '@user/Home';
-import Landing from '@user/Landing';
-import { ThemeProvider } from './components/theme-provider';
-import { Button } from './components/ui/button';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from '@user/Home';
 import AuthPage from '@auth/AuthPage';
-import { Navbar } from './components/Navbar';
+import { ThemeProvider } from './components/theme-provider';
+import { Toaster } from './components/ui/toaster';
 
 function App() {
   return (
-    
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Router>
-        <div>
-        <Navbar/>
-        </div>
         <Routes>
           <Route path='/' element={<AuthPage />} />
           <Route path="/home" element={<Home />} />
         </Routes>
       </Router>
+      <Toaster />
     </ThemeProvider>
   );
 }
