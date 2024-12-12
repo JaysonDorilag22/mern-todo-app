@@ -8,6 +8,7 @@
         ],
         "@auth/*": ["./src/auth/*"],
         "@user/*": ["./src/user/*"],
+        "@assets/*": ["./src/assets/*"],
       }
       // ...
     }
