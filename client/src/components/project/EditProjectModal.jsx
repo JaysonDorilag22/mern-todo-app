@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Upload, Plus } from 'lucide-react'
+import { Upload, Edit } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -17,14 +17,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useToast } from '@/hooks/use-toast'
-import { createProject } from '@/redux/actions/projectActions'
+import { editProject } from '@/redux/actions/projectActions'
 import { showToast } from '@/utils/toastUtils'
 
-export default function CreateProjectModal() {
+export default function EditProjectModal({ project }) {
   const [open, setOpen] = useState(false)
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
+  const [name, setName] = useState(project.name)
+  const [description, setDescription] = useState(project.description)
   const [image, setImage] = useState(null)
+  const [existingImage, setExistingImage] = useState(project.image?.url || null)
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const userId = useSelector((state) => state.auth.user?._id)
@@ -46,13 +47,9 @@ export default function CreateProjectModal() {
     }
 
     try {
-      await dispatch(createProject(formData))
-      showToast(toast, 'Project created successfully', '', 'success')
+      await dispatch(editProject(project._id, formData))
+      showToast(toast, 'Project updated successfully', '', 'success')
       setOpen(false)
-      // Clear form fields after successful submission
-      setName('')
-      setDescription('')
-      setImage(null)
     } catch (error) {
       showToast(toast, 'Error', error.message, 'error')
     } finally {
@@ -63,25 +60,27 @@ export default function CreateProjectModal() {
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0])
+      setExistingImage(null) // Clear existing image when a new image is selected
     }
   }
 
   const handleImageRemove = () => {
     setImage(null)
+    setExistingImage(null)
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-        <Plus className="mr-2 h-4 w-4" />
-          Create Project</Button>
+          <Edit className=" h-4 w-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle>Edit Project</DialogTitle>
           <DialogDescription>
-            Fill in the details to create a new project.
+            Update the details of your project.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -116,6 +115,12 @@ export default function CreateProjectModal() {
                       alt="Project"
                       className="w-full h-full object-cover rounded-lg"
                     />
+                  ) : existingImage ? (
+                    <img
+                      src={existingImage}
+                      alt="Project"
+                      className="w-full h-full object-cover rounded-lg"
+                    />
                   ) : (
                     <Upload className="text-gray-400" />
                   )}
@@ -129,9 +134,9 @@ export default function CreateProjectModal() {
                 />
               </label>
               <span className="text-sm text-gray-500">
-                {image ? image.name : 'Upload an image'}
+                {image ? image.name : existingImage ? 'Current image' : 'Upload an image'}
               </span>
-              {image && (
+              {(image || existingImage) && (
                 <Button type="button" onClick={handleImageRemove}>
                   Remove
                 </Button>
@@ -160,10 +165,10 @@ export default function CreateProjectModal() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Creating...
+                  Updating...
                 </div>
               ) : (
-                "Create Project"
+                "Update Project"
               )}
             </Button>
           </DialogFooter>

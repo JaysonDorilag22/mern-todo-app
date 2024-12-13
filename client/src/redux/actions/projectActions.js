@@ -61,7 +61,7 @@ export const joinProject = (referralData) => async (dispatch) => {
 export const editProject = (id, projectData) => async (dispatch) => {
   dispatch({ type: EDIT_PROJECT_REQUEST });
   try {
-    const response = await axios.put(`${serverUrl}/api/v1/projects/${id}`, projectData, {
+    const response = await axios.put(`${serverUrl}/api/v1/projects/edit/${id}`, projectData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

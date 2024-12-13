@@ -17,7 +17,7 @@ import {
 import { useToast } from '@/hooks/use-toast'
 import { joinProject, getUserProjects } from '@/redux/actions/projectActions'
 import { showToast } from '@/utils/toastUtils'
-
+import { FilePlus2 } from 'lucide-react'
 export default function JoinProjectModal() {
   const [open, setOpen] = useState(false)
   const [referralCode, setReferralCode] = useState('')
@@ -56,7 +56,9 @@ export default function JoinProjectModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Join Project</Button>
+        <Button>
+        <FilePlus2 className="mr-2 h-4 w-4" />
+            Join Project</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

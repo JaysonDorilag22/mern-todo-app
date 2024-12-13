@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, CheckSquare } from "lucide-react";
+import { Users, CheckSquare, Copy } from "lucide-react";
 import gradient1 from "@assets/gradients/gradient1.png";
 import gradient2 from "@assets/gradients/gradient2.png";
 import gradient3 from "@assets/gradients/gradient3.png";
@@ -10,6 +10,12 @@ import gradient5 from "@assets/gradients/gradient5.png";
 import { showToast } from "@/utils/toastUtils";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const gradients = [gradient1, gradient2, gradient3, gradient4, gradient5];
 
@@ -72,14 +78,25 @@ function ProjectCard({ project }) {
           className="absolute top-0 left-0 w-full h-full object-cover"
           onError={(e) => { e.target.src = randomGradient; }}
         />
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={handleCopyReferralCode} 
-          className="absolute top-3 right-3 rounded-lg"
-        >
-          Copy Referral Code
-        </Button>
+        <div className="absolute top-3 right-3 flex space-x-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleCopyReferralCode} 
+                  className="rounded-lg p-2"
+                >
+                  <Copy size={16} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Copy Referral Code</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
       <CardContent className="p-4 flex flex-col justify-between h-32">
         <div>
