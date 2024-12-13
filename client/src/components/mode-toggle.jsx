@@ -1,5 +1,5 @@
 import { Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
 import { useTheme } from "@/components/theme-provider"
 import { useState } from "react"
 
@@ -13,10 +13,11 @@ export function ModeToggle() {
   }
 
   return (
-    <Button variant="outline" size="icon" onClick={toggleTheme}>
-      <Sun className={`h-[1.2rem] w-[1.2rem] transition-all ${isDark ? "scale-0" : "scale-100"}`} />
-      <Moon className={`absolute h-[1.2rem] w-[1.2rem] transition-all ${isDark ? "scale-100" : "scale-0"}`} />
+    <div className="flex items-center">
+      <Sun className={`h-[1.2rem] w-[1.2rem] transition-all ${isDark ? "opacity-0" : "opacity-100"}`} />
+      <Switch checked={isDark} onCheckedChange={toggleTheme} className="mx-2" />
+      <Moon className={`h-[1.2rem] w-[1.2rem] transition-all ${isDark ? "opacity-100" : "opacity-0"}`} />
       <span className="sr-only">Toggle theme</span>
-    </Button>
+    </div>
   )
 }

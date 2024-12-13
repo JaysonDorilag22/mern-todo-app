@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -30,10 +30,8 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false); // Add loading state
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector(state => state.auth.user);
   const { toast } = useToast();
 
-  console.log(user)
   const toggleAuthMode = () => {
     setIsSignIn(!isSignIn);
   };
