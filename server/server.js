@@ -7,15 +7,19 @@ const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
-
 dotenv.config();
 connectDB();
 
 const app = express();
 
-app.use(cors());
+// Configure CORS to allow credentials and specify the correct origin
+app.use(cors({
+  origin: 'http://localhost:5173', // Replace with your frontend's localhost URL
+  credentials: true, // Allow credentials (cookies) to be sent
+}));
+
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser()); // Ensure cookie-parser middleware is used
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/projects', projectRoutes);

@@ -3,30 +3,42 @@ const dotenv = require('dotenv');
 const User = require('../models/userModel');
 dotenv.config();
 
+const errorHandler = (status, message) => {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+};
+
 const protect = async (req, res, next) => {
-  let token;
+  console.log('Cookies:', req.cookies); // Log cookies to verify if they are being read
 
-  // Check for token in headers
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
-  }
-
-  // Check for token in cookies
-  if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
-  }
+  const token = req.cookies.access_token;
 
   if (!token) {
-    return res.status(401).json({ message: 'Not authorized, no token' });
+    console.log('No token found');
+    return next(errorHandler(401, 'Unauthorized'));
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Not authorized, token failed' });
-  }
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+    if (err) {
+      console.log('Token verification failed:', err);
+      return next(errorHandler(403, 'Forbidden'));
+    }
+
+    try {
+      console.log('Decoded token:', decoded);
+      req.user = await User.findById(decoded.id).select('-password');
+      if (!req.user) {
+        console.log('User not found');
+        return next(errorHandler(404, 'User not found'));
+      }
+      console.log('User found:', req.user);
+      next();
+    } catch (error) {
+      console.log('User retrieval failed:', error);
+      return next(errorHandler(500, 'Internal Server Error'));
+    }
+  });
 };
 
 module.exports = { protect };

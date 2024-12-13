@@ -9,7 +9,6 @@ function generateReferralCode() {
 }
 
 // Create a new project
-// Create a new project
 const createProject = async (req, res) => {
   try {
     const { name, description, userId } = req.body;

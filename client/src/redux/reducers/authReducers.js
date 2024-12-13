@@ -1,4 +1,3 @@
-// filepath: /c:/Desktop/Beginner Projects/mern-todo-app/client/src/redux/reducers/authReducer.js
 import { createReducer } from '@reduxjs/toolkit';
 import {
   SIGN_IN_REQUEST,

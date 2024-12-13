@@ -1,11 +1,30 @@
+// filepath: /c:/Desktop/Beginner Projects/mern-todo-app/client/src/redux/store.js
 import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import authReducer from "./reducers/authReducers";
+import projectReducer from "./reducers/projectReducers";
 
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const rootReducer = {
+  auth: persistReducer(persistConfig, authReducer),
+  userProjects: projectReducer,
+};
 
 const store = configureStore({
-    reducer: {
-        auth: authReducer
-    }
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+      },
+    }),
 });
 
-export default store;
+const persistor = persistStore(store);
+
+export { store, persistor };
