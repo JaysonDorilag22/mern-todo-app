@@ -18,6 +18,9 @@ import {
   GET_USER_PROJECTS_REQUEST,
   GET_USER_PROJECTS_SUCCESS,
   GET_USER_PROJECTS_FAILURE,
+  GET_PROJECT_DETAILS_REQUEST,
+  GET_PROJECT_DETAILS_SUCCESS,
+  GET_PROJECT_DETAILS_FAILURE,
 } from '../../constants/actionTypes';
 
 const initialState = {
@@ -25,6 +28,7 @@ const initialState = {
     joinedProjects: [],
     createdProjects: [],
   },
+  projectDetails: null,
   loading: false,
   error: null,
 };
@@ -100,6 +104,17 @@ const projectReducer = createReducer(initialState, (builder) => {
       state.projects = action.payload;
     })
     .addCase(GET_USER_PROJECTS_FAILURE, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+    .addCase(GET_PROJECT_DETAILS_REQUEST, (state) => {
+      state.loading = true;
+    })
+    .addCase(GET_PROJECT_DETAILS_SUCCESS, (state, action) => {
+      state.loading = false;
+      state.projectDetails = action.payload;
+    })
+    .addCase(GET_PROJECT_DETAILS_FAILURE, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

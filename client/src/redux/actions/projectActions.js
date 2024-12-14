@@ -18,6 +18,9 @@ import {
   GET_USER_PROJECTS_REQUEST,
   GET_USER_PROJECTS_SUCCESS,
   GET_USER_PROJECTS_FAILURE,
+  GET_PROJECT_DETAILS_REQUEST,
+  GET_PROJECT_DETAILS_SUCCESS,
+  GET_PROJECT_DETAILS_FAILURE,
 } from "../../constants/actionTypes";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -29,17 +32,16 @@ export const createProject = (projectData) => async (dispatch) => {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      withCredentials: true, // Include credentials (cookies) in the request
+      withCredentials: true,
     });
     dispatch({ type: CREATE_PROJECT_SUCCESS, payload: response.data });
     return response.data;
   } catch (error) {
-    dispatch({ type: CREATE_PROJECT_FAILURE, payload: error.response.data.message });
-    throw new Error(error.response.data.message);
+    const errorMessage = error.response?.data?.message || 'Internal Server Error';
+    dispatch({ type: CREATE_PROJECT_FAILURE, payload: errorMessage });
+    throw new Error(errorMessage);
   }
 };
-
-// Similarly, update other actions to include credentials in the request
 
 export const joinProject = (referralData) => async (dispatch) => {
   dispatch({ type: JOIN_PROJECT_REQUEST });
@@ -48,13 +50,14 @@ export const joinProject = (referralData) => async (dispatch) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      withCredentials: true, // Include credentials (cookies) in the request
+      withCredentials: true,
     });
     dispatch({ type: JOIN_PROJECT_SUCCESS, payload: response.data });
     return response.data;
   } catch (error) {
-    dispatch({ type: JOIN_PROJECT_FAILURE, payload: error.response.data.message });
-    throw new Error(error.response.data.message);
+    const errorMessage = error.response?.data?.message || 'Internal Server Error';
+    dispatch({ type: JOIN_PROJECT_FAILURE, payload: errorMessage });
+    throw new Error(errorMessage);
   }
 };
 
@@ -65,43 +68,46 @@ export const editProject = (id, projectData) => async (dispatch) => {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      withCredentials: true, // Include credentials (cookies) in the request
+      withCredentials: true,
     });
     dispatch({ type: EDIT_PROJECT_SUCCESS, payload: response.data });
     return response.data;
   } catch (error) {
-    dispatch({ type: EDIT_PROJECT_FAILURE, payload: error.response.data.message });
-    throw new Error(error.response.data.message);
+    const errorMessage = error.response?.data?.message || 'Internal Server Error';
+    dispatch({ type: EDIT_PROJECT_FAILURE, payload: errorMessage });
+    throw new Error(errorMessage);
   }
 };
 
 export const deleteProject = (id) => async (dispatch) => {
   dispatch({ type: DELETE_PROJECT_REQUEST });
   try {
-    await axios.delete(`${serverUrl}/api/v1/projects/${id}`, {
-      withCredentials: true, // Include credentials (cookies) in the request
+    await axios.delete(`${serverUrl}/api/v1/projects/delete/${id}`, {
+      withCredentials: true,
     });
     dispatch({ type: DELETE_PROJECT_SUCCESS });
   } catch (error) {
-    dispatch({ type: DELETE_PROJECT_FAILURE, payload: error.response.data.message });
-    throw new Error(error.response.data.message);
+    const errorMessage = error.response?.data?.message || 'Internal Server Error';
+    dispatch({ type: DELETE_PROJECT_FAILURE, payload: errorMessage });
+    throw new Error(errorMessage);
   }
 };
 
 export const removeUserFromProject = (projectId, userId) => async (dispatch) => {
   dispatch({ type: REMOVE_USER_FROM_PROJECT_REQUEST });
   try {
-    const response = await axios.post(`${serverUrl}/api/v1/projects/removeUser`, { projectId, userId }, {
+    const response = await axios.post(`${serverUrl}/api/v1/projects/remove-user`, { projectId, userId }, {
       headers: {
         'Content-Type': 'application/json',
       },
-      withCredentials: true, // Include credentials (cookies) in the request
+      withCredentials: true,
     });
     dispatch({ type: REMOVE_USER_FROM_PROJECT_SUCCESS, payload: response.data });
     return response.data;
   } catch (error) {
-    dispatch({ type: REMOVE_USER_FROM_PROJECT_FAILURE, payload: error.response.data.message });
-    throw new Error(error.response.data.message);
+    const errorMessage = error.response?.data?.message || 'Internal Server Error';
+    dispatch({ type: REMOVE_USER_FROM_PROJECT_FAILURE, payload: errorMessage });
+    throw new Error(errorMessage);
   }
 };
 
@@ -109,11 +115,26 @@ export const getUserProjects = (userId) => async (dispatch) => {
   dispatch({ type: GET_USER_PROJECTS_REQUEST });
   try {
     const response = await axios.get(`${serverUrl}/api/v1/projects/user/${userId}`, {
-      withCredentials: true, // Include credentials (cookies) in the request
+      withCredentials: true,
     });
     dispatch({ type: GET_USER_PROJECTS_SUCCESS, payload: response.data });
   } catch (error) {
-    dispatch({ type: GET_USER_PROJECTS_FAILURE, payload: error.response.data.message });
-    throw new Error(error.response.data.message);
+    const errorMessage = error.response?.data?.message || 'Internal Server Error';
+    dispatch({ type: GET_USER_PROJECTS_FAILURE, payload: errorMessage });
+    throw new Error(errorMessage);
+  }
+};
+
+export const getProjectDetails = (id) => async (dispatch) => {
+  dispatch({ type: GET_PROJECT_DETAILS_REQUEST });
+  try {
+    const response = await axios.get(`${serverUrl}/api/v1/projects/${id}`, {
+      withCredentials: true,
+    });
+    dispatch({ type: GET_PROJECT_DETAILS_SUCCESS, payload: response.data });
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Internal Server Error';
+    dispatch({ type: GET_PROJECT_DETAILS_FAILURE, payload: errorMessage });
+    throw new Error(errorMessage);
   }
 };

@@ -2,10 +2,14 @@ const Project = require('../models/projectModel');
 
 const isAdmin = async (req, res, next) => {
   try {
-    const { id } = req.params; 
-    const userId = req.user.id; 
+    const projectId = req.params.id || req.body.projectId; // Check both params and body for project ID
+    const userId = req.user.id;
 
-    const project = await Project.findById(id);
+    if (!projectId) {
+      return res.status(400).json({ error: 'Project ID is required' });
+    }
+
+    const project = await Project.findById(projectId);
     if (!project) {
       return res.status(404).json({ error: 'Project not found' });
     }

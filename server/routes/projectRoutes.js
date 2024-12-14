@@ -13,6 +13,6 @@ router.put('/edit/:id', protect, isAdmin, upload.single('image'), editProject);
 router.delete('/delete/:id', protect, isAdmin, deleteProject);
 router.post('/remove-user', protect, isAdmin, removeUserFromProject);
 router.get('/user/:userId', protect, getUserProjects);
-router.get('/project/:id', protect, getProjectDetails);
+router.get('/:id', protect, getProjectDetails);
 
 module.exports = router;

@@ -50,6 +50,7 @@ export default function EditProjectModal({ project }) {
       await dispatch(editProject(project._id, formData))
       showToast(toast, 'Project updated successfully', '', 'success')
       setOpen(false)
+      window.location.reload() // Refresh the page after the dialog is closed
     } catch (error) {
       showToast(toast, 'Error', error.message, 'error')
     } finally {
@@ -74,6 +75,7 @@ export default function EditProjectModal({ project }) {
       <DialogTrigger asChild>
         <Button>
           <Edit className=" h-4 w-4" />
+          Edit Project
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

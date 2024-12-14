@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, CheckSquare, Copy } from "lucide-react";
@@ -9,7 +10,7 @@ import gradient4 from "@assets/gradients/gradient4.png";
 import gradient5 from "@assets/gradients/gradient5.png";
 import { showToast } from "@/utils/toastUtils";
 import { useToast } from "@/hooks/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
+import ProjectCardSkeleton from "@/components/project/ProjectCardSkeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -21,18 +22,20 @@ const gradients = [gradient1, gradient2, gradient3, gradient4, gradient5];
 
 function ProjectCard({ project }) {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 3000); // 3 seconds delay
+    }, 2000); // 2 seconds delay
 
     return () => clearTimeout(timer);
   }, []);
 
-  const handleCopyReferralCode = () => {
+  const handleCopyReferralCode = (e) => {
+    e.stopPropagation(); // Prevent card click event
     navigator.clipboard.writeText(project.referralCode)
       .then(() => {
         showToast(toast, 'Success', 'Referral code copied to clipboard!', 'success');
@@ -43,34 +46,16 @@ function ProjectCard({ project }) {
       });
   };
 
+  const handleCardClick = () => {
+    navigate(`/project/${project._id}`);
+  };
+
   if (loading) {
-    return (
-      <Card className="w-64 h-64 overflow-hidden">
-        <div className="relative w-full h-32">
-          <Skeleton className="absolute top-0 left-0 w-full h-full" />
-        </div>
-        <CardContent className="p-4 flex flex-col justify-between h-32">
-          <div>
-            <Skeleton className="h-6 w-3/4 mb-2" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-          <CardFooter className="p-0 pt-2 flex justify-between text-xs text-muted-foreground">
-            <div className="flex items-center space-x-1">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-4 w-8" />
-            </div>
-            <div className="flex items-center space-x-1">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-4 w-8" />
-            </div>
-          </CardFooter>
-        </CardContent>
-      </Card>
-    );
+    return <ProjectCardSkeleton />;
   }
 
   return (
-    <Card className="w-64 h-64 overflow-hidden">
+    <Card className="w-64 h-64 overflow-hidden cursor-pointer" onClick={handleCardClick}>
       <div className="relative w-full h-32">
         <img
           src={project.image?.url || randomGradient}
