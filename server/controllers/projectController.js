@@ -3,9 +3,21 @@ const User = require('../models/userModel');
 const crypto = require('crypto');
 const { uploadImage } = require("../utils/uploadImage");
 const cloudinary = require('../config/cloudinary');
+
 // Generate a referral code
-function generateReferralCode() {
-  return crypto.randomBytes(8).toString('hex');
+async function generateReferralCode() {
+  let referralCode;
+  let isDuplicate = true;
+
+  while (isDuplicate) {
+    referralCode = crypto.randomBytes(8).toString('hex');
+    const existingProject = await Project.findOne({ referralCode });
+    if (!existingProject) {
+      isDuplicate = false;
+    }
+  }
+
+  return referralCode;
 }
 
 // Create a new project
@@ -169,5 +181,21 @@ const getUserProjects = async (req, res) => {
   }
 };
 
+// Get project details
+const getProjectDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-module.exports = { createProject, joinProject, editProject, deleteProject, removeUserFromProject, getUserProjects };
+    const project = await Project.findById(id).populate('user', 'name email').populate('invitedUsers', 'name email');
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    res.status(200).json(project);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+module.exports = { createProject, joinProject, editProject, deleteProject, removeUserFromProject, getUserProjects, getProjectDetails };
