@@ -21,10 +21,11 @@ async function generateReferralCode() {
 }
 
 // Create a new project
+// Create a new project
 const createProject = async (req, res) => {
   try {
     const { name, description, userId } = req.body;
-    const referralCode = generateReferralCode();
+    const referralCode = await generateReferralCode(); // Await the generateReferralCode function
 
     let image = null;
     if (req.file) {
@@ -165,12 +166,13 @@ const removeUserFromProject = async (req, res) => {
 };
 
 // Get all projects a user has joined and created
+// Get all projects a user has joined and created
 const getUserProjects = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const joinedProjects = await Project.find({ invitedUsers: userId });
-    const createdProjects = await Project.find({ user: userId });
+    const joinedProjects = await Project.find({ invitedUsers: userId }).populate('user', 'name email').populate('invitedUsers', 'name email');
+    const createdProjects = await Project.find({ user: userId }).populate('user', 'name email').populate('invitedUsers', 'name email');
 
     res.status(200).json({
       joinedProjects,
@@ -186,7 +188,17 @@ const getProjectDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const project = await Project.findById(id).populate('user', 'name email').populate('invitedUsers', 'name email');
+    const project = await Project.findById(id)
+      .populate('user', 'name email')
+      .populate('invitedUsers', 'name email')
+      .populate({
+        path: 'todos',
+        populate: {
+          path: 'assignedUser',
+          select: 'name email'
+        }
+      });
+
     if (!project) {
       return res.status(404).json({ error: 'Project not found' });
     }

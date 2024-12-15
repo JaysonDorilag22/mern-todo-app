@@ -18,6 +18,7 @@ import ErrorMessage from '@/components/ui/ErrorMessage';
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog';
+import AddTodoModal from '@/components/project/AddTodoModal';
 
 export default function ProjectDetails({ setBreadcrumbs }) {
   const { id } = useParams();
@@ -94,21 +95,21 @@ export default function ProjectDetails({ setBreadcrumbs }) {
       setConfirmationDialogOpen(false);
       dispatch(getProjectDetails(id)); // Refetch project details
     } catch (error) {
-      showToast(toast, 'Error', error.message, 'error');c
+      showToast(toast, 'Error', error.message, 'error');
     } finally {
       setUpdateLoading(false);
     }
   };
 
   const handleCopyReferralCode = () => {
-  navigator.clipboard.writeText(project.referralCode)
-    .then(() => {
-      showToast(toast, 'Success', 'Referral code copied to clipboard!', 'success');
-    })
-    .catch(err => {
-      showToast(toast, 'Error', error.message, 'error');c
-    });
-};
+    navigator.clipboard.writeText(project.referralCode)
+      .then(() => {
+        showToast(toast, 'Success', 'Referral code copied to clipboard!', 'success');
+      })
+      .catch(err => {
+        showToast(toast, 'Error', err.message, 'error');
+      });
+  };
 
   if (loading) {
     return <ProjectDetailsSkeleton />;
@@ -168,15 +169,15 @@ export default function ProjectDetails({ setBreadcrumbs }) {
                 </div>
               )}
 
-<div className="flex items-center gap-2 bg-muted p-2 rounded-md w-fit">
-              <Button variant="ghost" size="sm" onClick={handleCopyReferralCode} className="p-0">
-                <Clipboard className="h-4 w-4" />
-              </Button>
-              <span className="text-sm font-medium">Referral Code:</span>
-              <code className="rounded bg-background px-2 py-1 text-sm">
-                {project.referralCode}
-              </code>
-            </div>
+              <div className="flex items-center gap-2 bg-muted p-2 rounded-md w-fit">
+                <Button variant="ghost" size="sm" onClick={handleCopyReferralCode} className="p-0">
+                  <Clipboard className="h-4 w-4" />
+                </Button>
+                <span className="text-sm font-medium">Referral Code:</span>
+                <code className="rounded bg-background px-2 py-1 text-sm">
+                  {project.referralCode}
+                </code>
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -250,7 +251,7 @@ export default function ProjectDetails({ setBreadcrumbs }) {
                       <Card key={todo._id} className="flex items-start p-4 gap-4">
                         <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0">
                           <img
-                            src={todo.image || "/placeholder.svg"}
+                            src={todo.images.length > 0 ? todo.images[0].url : "/placeholder.svg"}
                             alt={todo.title}
                             className="object-cover w-full h-full"
                           />
@@ -271,6 +272,11 @@ export default function ProjectDetails({ setBreadcrumbs }) {
                   </div>
                 </ScrollArea>
               </CardContent>
+              {isAdmin && (
+                <div className="p-4">
+                  <AddTodoModal projectId={project._id} />
+                </div>
+              )}
             </Card>
           </div>
         </CardContent>

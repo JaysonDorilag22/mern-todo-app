@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import authReducer from "./reducers/authReducers";
 import projectReducer from "./reducers/projectReducers";
+import todoReducer from "./reducers/todoReducers";
 
 const persistConfig = {
   key: 'root',
@@ -13,6 +14,7 @@ const persistConfig = {
 const rootReducer = {
   auth: persistReducer(persistConfig, authReducer),
   userProjects: projectReducer,
+  todos: todoReducer,
 };
 
 const store = configureStore({

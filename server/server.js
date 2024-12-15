@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
+const todoRoutes = require('./routes/todoRoutes');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(cookieParser()); // Ensure cookie-parser middleware is used
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/projects', projectRoutes);
+app.use('/api/v1/todos', todoRoutes);
 
 app.use(errorHandler);
 
